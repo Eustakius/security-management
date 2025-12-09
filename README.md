@@ -1,47 +1,56 @@
-# Security Management System (Secure Messaging App)
+# Sistem Manajemen Keamanan (Aplikasi Pesan Aman)
 
-A secure messaging application built with **CodeIgniter 4** that implements **End-to-End Encryption (E2EE)** using a Hybrid Encryption scheme (RSA + AES) and Digital Signatures for message integrity.
+**Universitas Atma Jaya Yogyakarta**
 
-### 🔒 Key Features
+### 👥 Anggota Tim
+*   **Yudhika Wira Utama** (220711701) - Database
+*   **Vaness Avril Madayanto** (220711685) - Frontend
+*   **Eustakius Satu Rajawali Ku** (220711648) - Backend + Frontend
 
-*   **Secure User Registration**:
-    *   Client-side generation of RSA (2048-bit) Public/Private key pairs.
-    *   Private keys are encrypted with the user's password before being sent to the server.
-    *   The server *never* stores or sees the plain-text private key.
-*   **Secure Login**:
-    *   Standard authentication with session management.
-    *   Retrieval of encrypted keys upon login for client-side decryption usage.
-*   **End-to-End Encrypted Messaging**:
-    *   **Hybrid Encryption**: High-performance and secure.
-        1.  **AES-256 (GCM)** is used to encrypt the actual message content (payload).
-        2.  **RSA** is used to encrypt the AES key.
-    *   **Forward Secrecy**: Each message is encrypted with a unique, randomly generated AES key.
-*   **Message Integrity & Authentication**:
-    *   All messages are **digitally signed** using the sender's Private RSA Key.
-    *   Recipients verify the signature using the sender's Public Key to ensure the message was not tampered with and truly came from the sender.
-*   **Inbox & Sent Box**: View your secure history with automatic client-side decryption.
+---
 
-### 🛠️ Technology Stack
+Aplikasi pengiriman pesan aman berbasis web yang dibangun dengan **CodeIgniter 4**, menerapkan **Enkripsi End-to-End (E2EE)** menggunakan skema Enkripsi Hibrida (RSA + AES) dan Tanda Tangan Digital untuk integritas pesan.
 
-*   **Backend Framework**: CodeIgniter 4.x (PHP 8.1+)
+### 🔒 Fitur Utama
+
+*   **Pendaftaran Pengguna yang Aman**:
+    *   Pembuatan pasangan kunci RSA (2048-bit) Publik/Privat di sisi klien.
+    *   Kunci privat dienkripsi dengan kata sandi pengguna sebelum dikirim ke server.
+    *   Server *tidak pernah* menyimpan atau melihat kunci privat dalam bentuk teks biasa (plain-text).
+*   **Login Aman**:
+    *   Otentikasi standar dengan manajemen sesi.
+    *   Pengambilan kunci terenkripsi saat login untuk penggunaan dekripsi di sisi klien.
+*   **Pesan Terenkripsi End-to-End**:
+    *   **Enkripsi Hibrida**: Berkinerja tinggi dan aman.
+        1.  **AES-256 (GCM)** digunakan untuk mengenkripsi isi pesan sebenarnya (payload).
+        2.  **RSA** digunakan untuk mengenkripsi kunci AES.
+    *   **Forward Secrecy**: Setiap pesan dienkripsi dengan kunci AES unik yang dibuat secara acak.
+*   **Integritas & Otentikasi Pesan**:
+    *   Semua pesan **ditandatangani secara digital** menggunakan Kunci Privat RSA pengirim.
+    *   Penerima memverifikasi tanda tangan menggunakan Kunci Publik pengirim untuk memastikan pesan tidak dirusak dan benar-benar berasal dari pengirim.
+*   **Kotak Masuk & Kotak Keluar**: Lihat riwayat pesan aman Anda dengan dekripsi otomatis di sisi klien.
+
+### 🛠️ Teknologi yang Digunakan
+
+*   **Framework Backend**: CodeIgniter 4.x (PHP 8.1+)
 *   **Database**: MySQL / MariaDB
-*   **Frontend**: HTML5, Bootstrap (likely), JavaScript (Web Crypto API / Custom Crypto Logic)
-*   **Cryptography**:
-    *   RSA-OAEP for Key Exchange.
-    *   AES-GCM for Content Encryption.
-    *   RSA-PSS / ECDSA (depending on JS impl) for Signatures.
+*   **Frontend**: HTML5, Bootstrap, JavaScript (Web Crypto API / Logika Kripto Kustom)
+*   **Kriptografi**:
+    *   RSA-OAEP untuk Pertukaran Kunci.
+    *   AES-GCM untuk Enkripsi Konten.
+    *   RSA-PSS / ECDSA (tergantung implementasi JS) untuk Tanda Tangan.
 
-### 🚀 Installation & Setup
+### 🚀 Instalasi & Pengaturan
 
-#### 1. Prerequisites
-*   PHP 8.1 or higher
-*   Composer installed globally
-*   Valid MySQL/MariaDB server
+#### 1. Prasyarat
+*   PHP 8.1 atau lebih tinggi
+*   Composer terinstal secara global
+*   Server MySQL/MariaDB yang valid
 
-#### 2. Installation
-1.  **Clone the repository:**
+#### 2. Instalasi
+1.  **Clone repositori:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/Eustakius/security-management.git
     cd security-management
     ```
 
@@ -50,12 +59,12 @@ A secure messaging application built with **CodeIgniter 4** that implements **En
     composer install
     ```
 
-3.  **Environment Setup:**
-    Copy the example environment file and configure it.
+3.  **Pengaturan Environment:**
+    Salin file environment contoh dan konfigurasikan.
     ```bash
     cp env .env
     ```
-    Open `.env` and configure your database settings:
+    Buka `.env` dan konfigurasikan pengaturan database Anda:
     ```ini
     CI_ENVIRONMENT = development
 
@@ -66,34 +75,34 @@ A secure messaging application built with **CodeIgniter 4** that implements **En
     database.default.DBDriver = MySQLi
     ```
 
-#### 3. Database Setup
-Import the provided SQL file to create the necessary tables (`users`, `messages`).
-*   Import `security_app.sql` into your database tool (phpMyAdmin, DBeaver, etc.).
-*   *Alternatively*, if migrations are set up (check `php spark migrate`), use that. *Note: Use the SQL file if migrations are missing.*
+#### 3. Pengaturan Database
+Impor file SQL yang disediakan untuk membuat tabel yang diperlukan (`users`, `messages`).
+*   Impor `security_app.sql` ke dalam tool database Anda (phpMyAdmin, DBeaver, dll.).
+*   *Alternatifnya*, jika migrasi sudah diatur (cek `php spark migrate`), gunakan itu. *Catatan: Gunakan file SQL jika migrasi tidak tersedia.*
 
-#### 4. Run the Application
-Start the local development server:
+#### 4. Menjalankan Aplikasi
+Mulai server pengembangan lokal:
 ```bash
 php spark serve
 ```
-Access the application at: `http://localhost:8080`
+Akses aplikasi di: `http://localhost:8080`
 
-### 🛡️ Security Architecture Flow
+### 🛡️ Alur Arsitektur Keamanan
 
-1.  **Sending a Message:**
-    *   Alice wants to send a message to Bob.
-    *   App generates a random **AES Key**.
-    *   Message is encrypted with **AES Key**.
-    *   **AES Key** is encrypted with **Bob's Public Key** (so only Bob can read it).
-    *   **AES Key** is *also* encrypted with **Alice's Public Key** (so Alice can read her sent message).
-    *   A **Digital Signature** is created using **Alice's Private Key**.
-    *   The Encrypted Content, Encrypted Keys, IV, and Signature are sent to the server.
+1.  **Mengirim Pesan:**
+    *   Alice ingin mengirim pesan ke Bob.
+    *   Aplikasi membuat **Kunci AES** acak.
+    *   Pesan dienkripsi dengan **Kunci AES**.
+    *   **Kunci AES** dienkripsi dengan **Kunci Publik Bob** (sehingga hanya Bob yang bisa membacanya).
+    *   **Kunci AES** *juga* dienkripsi dengan **Kunci Publik Alice** (sehingga Alice bisa membaca pesan terkirimnya).
+    *   **Tanda Tangan Digital** dibuat menggunakan **Kunci Privat Alice**.
+    *   Konten Terenkripsi, Kunci Terenkripsi, IV, dan Tanda Tangan dikirim ke server.
 
-2.  **Receiving a Message:**
-    *   Bob logs in and fetches his specific Encrypted Key for the message.
-    *   Bob's browser decrypts the **AES Key** using **Bob's Private Key** (unlocked with his password).
-    *   The decrypted **AES Key** is used to decrypt the **Message Content**.
-    *   Bob's browser verifies the **Signature** using **Alice's Public Key**.
+2.  **Menerima Pesan:**
+    *   Bob login dan mengambil Kunci Terenkripsi spesifik miliknya untuk pesan tersebut.
+    *   Browser Bob mendekripsi **Kunci AES** menggunakan **Kunci Privat Bob** (yang dibuka dengan kata sandinya).
+    *   **Kunci AES** yang telah didekripsi digunakan untuk mendekripsi **Isi Pesan**.
+    *   Browser Bob memverifikasi **Tanda Tangan** menggunakan **Kunci Publik Alice**.
 
 ---
-*Note: This project is for educational purposes to demonstrate secure communication principles.*
+*Catatan: Proyek ini bertujuan untuk tujuan pendidikan guna mendemonstrasikan prinsip-prinsip komunikasi aman.*
