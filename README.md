@@ -1,68 +1,99 @@
-# CodeIgniter 4 Application Starter
+# Security Management System (Secure Messaging App)
 
-## What is CodeIgniter?
+A secure messaging application built with **CodeIgniter 4** that implements **End-to-End Encryption (E2EE)** using a Hybrid Encryption scheme (RSA + AES) and Digital Signatures for message integrity.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+### 🔒 Key Features
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+*   **Secure User Registration**:
+    *   Client-side generation of RSA (2048-bit) Public/Private key pairs.
+    *   Private keys are encrypted with the user's password before being sent to the server.
+    *   The server *never* stores or sees the plain-text private key.
+*   **Secure Login**:
+    *   Standard authentication with session management.
+    *   Retrieval of encrypted keys upon login for client-side decryption usage.
+*   **End-to-End Encrypted Messaging**:
+    *   **Hybrid Encryption**: High-performance and secure.
+        1.  **AES-256 (GCM)** is used to encrypt the actual message content (payload).
+        2.  **RSA** is used to encrypt the AES key.
+    *   **Forward Secrecy**: Each message is encrypted with a unique, randomly generated AES key.
+*   **Message Integrity & Authentication**:
+    *   All messages are **digitally signed** using the sender's Private RSA Key.
+    *   Recipients verify the signature using the sender's Public Key to ensure the message was not tampered with and truly came from the sender.
+*   **Inbox & Sent Box**: View your secure history with automatic client-side decryption.
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+### 🛠️ Technology Stack
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+*   **Backend Framework**: CodeIgniter 4.x (PHP 8.1+)
+*   **Database**: MySQL / MariaDB
+*   **Frontend**: HTML5, Bootstrap (likely), JavaScript (Web Crypto API / Custom Crypto Logic)
+*   **Cryptography**:
+    *   RSA-OAEP for Key Exchange.
+    *   AES-GCM for Content Encryption.
+    *   RSA-PSS / ECDSA (depending on JS impl) for Signatures.
 
-## Installation & updates
+### 🚀 Installation & Setup
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+#### 1. Prerequisites
+*   PHP 8.1 or higher
+*   Composer installed globally
+*   Valid MySQL/MariaDB server
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+#### 2. Installation
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repo-url>
+    cd security-management
+    ```
 
-## Setup
+2.  **Install Dependencies:**
+    ```bash
+    composer install
+    ```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+3.  **Environment Setup:**
+    Copy the example environment file and configure it.
+    ```bash
+    cp env .env
+    ```
+    Open `.env` and configure your database settings:
+    ```ini
+    CI_ENVIRONMENT = development
 
-## Important Change with index.php
+    database.default.hostname = localhost
+    database.default.database = security_app
+    database.default.username = root
+    database.default.password = 
+    database.default.DBDriver = MySQLi
+    ```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+#### 3. Database Setup
+Import the provided SQL file to create the necessary tables (`users`, `messages`).
+*   Import `security_app.sql` into your database tool (phpMyAdmin, DBeaver, etc.).
+*   *Alternatively*, if migrations are set up (check `php spark migrate`), use that. *Note: Use the SQL file if migrations are missing.*
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+#### 4. Run the Application
+Start the local development server:
+```bash
+php spark serve
+```
+Access the application at: `http://localhost:8080`
 
-**Please** read the user guide for a better explanation of how CI4 works!
+### 🛡️ Security Architecture Flow
 
-## Repository Management
+1.  **Sending a Message:**
+    *   Alice wants to send a message to Bob.
+    *   App generates a random **AES Key**.
+    *   Message is encrypted with **AES Key**.
+    *   **AES Key** is encrypted with **Bob's Public Key** (so only Bob can read it).
+    *   **AES Key** is *also* encrypted with **Alice's Public Key** (so Alice can read her sent message).
+    *   A **Digital Signature** is created using **Alice's Private Key**.
+    *   The Encrypted Content, Encrypted Keys, IV, and Signature are sent to the server.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+2.  **Receiving a Message:**
+    *   Bob logs in and fetches his specific Encrypted Key for the message.
+    *   Bob's browser decrypts the **AES Key** using **Bob's Private Key** (unlocked with his password).
+    *   The decrypted **AES Key** is used to decrypt the **Message Content**.
+    *   Bob's browser verifies the **Signature** using **Alice's Public Key**.
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+---
+*Note: This project is for educational purposes to demonstrate secure communication principles.*
