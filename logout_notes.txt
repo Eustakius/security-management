@@ -1,0 +1,7 @@
+
+// Clear sensitive keys on logout if detected
+if(window.location.pathname.endsWith('/logout') || window.location.href.indexOf('logout') > -1) {
+    const username = "<?= session()->get('username') ?>"; // Might be empty if session already destroyed
+    // We can't know the username easily after session destroy, so let's just clear all secure_msg keys? 
+    // Or simpler: The logout link in base.php can have an onclick handler.
+}
