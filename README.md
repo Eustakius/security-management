@@ -38,7 +38,7 @@ Aplikasi pengiriman pesan aman berbasis web yang dibangun dengan **CodeIgniter 4
 *   **Kriptografi**:
     *   RSA-OAEP untuk Pertukaran Kunci.
     *   AES-GCM untuk Enkripsi Konten.
-    *   RSA-PSS / ECDSA (tergantung implementasi JS) untuk Tanda Tangan.
+    *   RSA-PSS / ECDSA untuk Tanda Tangan.
 
 ### 🚀 Instalasi & Pengaturan
 
